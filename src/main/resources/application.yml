@@ -13,6 +13,6 @@ mybatis-plus:
     map-underscore-to-camel-case: false
   global-config:
     db-config:
-      logic-delete-field: flag # 逻辑删除
+      logic-delete-field: isDetele # 逻辑删除
       logic-delete-value: 1 # 逻辑已删除
       logic-not-delete-value: 0 # 逻辑为删除
