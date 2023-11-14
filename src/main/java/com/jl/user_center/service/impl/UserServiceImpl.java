@@ -12,10 +12,10 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
-import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.jl.user_center.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
 * @author 99367
@@ -34,8 +34,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     // 密码加密盐
     private static final String SALT = "JLkuaishixi";
 
-    // 用户登录态key
-    private static final String USER_LOGIN_STATE = "userloginstate";
+
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -106,19 +105,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         // 用户脱敏
-        User safetyUser = new User();
-        safetyUser.setId(user.getId());
-        safetyUser.setUsername(user.getUsername());
-        safetyUser.setUserAccount(user.getUserAccount());
-        safetyUser.setAvatarUrl(user.getAvatarUrl());
-        safetyUser.setGender(user.getGender());
-        safetyUser.setPhone(user.getPhone());
-        safetyUser.setEmail(user.getEmail());
-        safetyUser.setUserStatus(user.getUserStatus());
-        safetyUser.setCreateTime(user.getCreateTime());
+        User safetyUser = getSafetyUser(user);
 
         // 记录用户登录态
         request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
+        return safetyUser;
+    }
+
+
+    /**
+     * 用户脱敏
+     * @param originUser
+     * @return
+     */
+    @Override
+    public User getSafetyUser(User originUser){
+        User safetyUser = new User();
+        safetyUser.setId(originUser.getId());
+        safetyUser.setUsername(originUser.getUsername());
+        safetyUser.setUserAccount(originUser.getUserAccount());
+        safetyUser.setAvatarUrl(originUser.getAvatarUrl());
+        safetyUser.setGender(originUser.getGender());
+        safetyUser.setPhone(originUser.getPhone());
+        safetyUser.setUserRole(originUser.getUserRole());
+        safetyUser.setEmail(originUser.getEmail());
+        safetyUser.setUserStatus(originUser.getUserStatus());
+        safetyUser.setCreateTime(originUser.getCreateTime());
         return safetyUser;
     }
 }
